@@ -1,0 +1,77 @@
+openapi: 3.0.0
+info:
+  title: S02 - Responder Encuestas
+  description: API para gestionar las respuestas de los usuarios a encuestas y formularios.
+  version: 1.0.0
+servers:
+- url: http://localhost:5001
+  description: Servidor local para desarrollo
+tags:
+- name: Statistics
+  description: Operaciones relacionadas con el análisis y las estadísticas.
+paths:
+  /statistics/{survey_id}:
+    get:
+      tags:
+      - Statistics
+      summary: Obtener estadísticas de una encuesta
+      description: Devuelve estadísticas relacionadas con las respuestas enviadas
+        a una encuesta específica.
+      operationId: statistics_survey_id_get
+      parameters:
+      - name: survey_id
+        in: path
+        description: ID de la encuesta
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: Estadísticas de la encuesta.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SurveyStatistics'
+        "404":
+          description: Encuesta no encontrada.
+      x-openapi-router-controller: swagger_server.controllers.statistics_controller
+components:
+  schemas:
+    SurveyStatistics:
+      type: object
+      properties:
+        total_responses:
+          type: integer
+          example: 150
+        question_statistics:
+          type: array
+          items:
+            $ref: '#/components/schemas/SurveyStatistics_question_statistics'
+      example:
+        total_responses: 150
+        question_statistics:
+        - most_common_answer: Muy satisfecho
+          average_response: 4.5
+          question_id: 101
+        - most_common_answer: Muy satisfecho
+          average_response: 4.5
+          question_id: 101
+    SurveyStatistics_question_statistics:
+      type: object
+      properties:
+        question_id:
+          type: integer
+          example: 101
+        average_response:
+          type: number
+          example: 4.5
+        most_common_answer:
+          type: string
+          example: Muy satisfecho
+      example:
+        most_common_answer: Muy satisfecho
+        average_response: 4.5
+        question_id: 101
+
